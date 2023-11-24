@@ -11,7 +11,7 @@ public class Deck
         {
             for (int j = 0; j < 13; j++)
             {
-                Card newCard = new Card((CardColor)i, (CardValue)j);
+                Card newCard = new Card((CardSuit)i, (CardValue)j);
                 Cards.Add(newCard);
             }
         }

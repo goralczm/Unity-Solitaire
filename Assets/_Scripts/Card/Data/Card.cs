@@ -1,11 +1,11 @@
 public class Card
 {
-    public readonly CardColor color;
-    public readonly CardValue value;
+    public readonly CardSuit Suit;
+    public readonly CardValue Value;
 
-    public Card(CardColor color, CardValue value)
+    public Card(CardSuit color, CardValue value)
     {
-        this.color = color;
-        this.value = value;
+        this.Suit = color;
+        this.Value = value;
     }
 }

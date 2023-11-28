@@ -4,6 +4,14 @@ public class FinalPile : CardPile
 {
     [SerializeField] private CardSuit _requiredSuit;
 
+    public override void AddCardToPile(CardDisplay card)
+    {
+        if (card.GetAllCardsBelow().Count > 0)
+            return;
+
+        base.AddCardToPile(card);
+    }
+
     protected override bool IsValidSuit(Card card)
     {
         return card.Suit == _requiredSuit;

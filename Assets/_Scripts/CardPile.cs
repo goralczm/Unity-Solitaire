@@ -22,7 +22,7 @@ public class CardPile : MonoBehaviour, IDropHandler
         AddCardToPile(draggedCard);
     }
 
-    public void AddCardToPile(CardDisplay card)
+    public virtual void AddCardToPile(CardDisplay card)
     {
         if (_cardsOnPile.Contains(card))
             return;

@@ -19,14 +19,21 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private CardPile _pile;
     private Transform _lastParentTransform;
+    private Transform _beforeDragParent;
+    private Transform _parentWhenDragging;
     private Vector2 _lastDragPos;
+
+    public delegate void OnMovedDelegate();
+    public OnMovedDelegate OnMovedHandler;
+
+    public void SetDragParent(Transform canvas) => _parentWhenDragging = canvas;
 
     public void SetCard(Card card)
     {
         Card = card;
         foreach (var valueText in _valueTexts)
         {
-            if (Card.Value == 0 || (int)Card.Value >= 10)
+            if (Card.Value == CardValue.Ace || (int)Card.Value >= 10)
                 valueText.SetText(Card.Value.ToString());
             else
                 valueText.SetText(((int)Card.Value + 1).ToString());
@@ -37,7 +44,7 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         transform.name = $"{Card.Suit} {Card.Value}";
 
-        if ((int)card.Suit % 2 == 0)
+        if (card.Suit == CardSuit.Diamonds || card.Suit == CardSuit.Hearts)
             _image.color = Color.red;
     }
 
@@ -47,6 +54,8 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             return;
 
         _lastDragPos = transform.position;
+        _beforeDragParent = transform.parent;
+        transform.parent = _parentWhenDragging;
         _lastParentTransform = transform.parent;
         _canvasGroup.blocksRaycasts = false;
         _canvasGroup.alpha = .6f;
@@ -65,7 +74,11 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _canvasGroup.blocksRaycasts = true;
         _canvasGroup.alpha = 1f;
         if (transform.parent == _lastParentTransform)
+        {
+            transform.parent = _beforeDragParent;
             transform.position = _lastDragPos;
+        }
+        OnMovedHandler?.Invoke();
     }
 
     public void ShowFace()

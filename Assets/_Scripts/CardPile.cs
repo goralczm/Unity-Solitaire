@@ -110,4 +110,12 @@ public class CardPile : MonoBehaviour, IDropHandler
         return (int)card.Suit != ((int)lastCardSuit + 2) % 4 &&
                card.Suit != lastCardSuit;
     }
+
+    public CardDisplay Peek()
+    {
+        if (_cardsOnPile.Count == 0)
+            return null;
+
+        return _cardsOnPile[_cardsOnPile.Count - 1];
+    }
 }

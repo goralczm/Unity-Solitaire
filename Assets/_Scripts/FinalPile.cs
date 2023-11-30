@@ -14,11 +14,13 @@ public class FinalPile : CardPile
 
     protected override bool IsValidSuit(Card card)
     {
+        return true;
         return card.Suit == _requiredSuit;
     }
 
     protected override bool IsValidValue(Card card)
     {
+        return true;
         if (_cardsOnPile.Count == 0)
             return card.Value == 0;
 

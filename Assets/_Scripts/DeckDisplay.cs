@@ -6,6 +6,8 @@ public class DeckDisplay : MonoBehaviour
     [SerializeField] private CardDisplay _cardPrefab;
     [SerializeField] private DeckPile _deckPile;
     [SerializeField] private CardPile[] _piles;
+    [SerializeField] private Transform _cardDragParent;
+    [SerializeField] private FinalPile[] _finalPiles;
 
     private Deck _deck;
 
@@ -42,8 +44,21 @@ public class DeckDisplay : MonoBehaviour
     {
         CardDisplay newCardDisplay = Instantiate(_cardPrefab, pile.transform.position, Quaternion.identity);
         newCardDisplay.SetCard(card);
+        newCardDisplay.SetDragParent(_cardDragParent);
+        newCardDisplay.OnMovedHandler += CheckWinCondition;
         pile.ForceAddCardToPile(newCardDisplay);
 
         return newCardDisplay;
+    }
+
+    public void CheckWinCondition()
+    {
+        foreach (FinalPile pile in _finalPiles)
+        {
+            if (pile.Peek().Card.Value != CardValue.King)
+                return;
+        }
+
+        print("Win");
     }
 }

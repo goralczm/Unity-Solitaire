@@ -13,7 +13,6 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [SerializeField] private Image _image;
     [SerializeField] private TextMeshProUGUI[] _valueTexts;
     [SerializeField] private TextMeshProUGUI[] _suitTexts;
-    [SerializeField] private Transform _cardOnTop;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private GameObject _face;
     [SerializeField] private GameObject _reverse;

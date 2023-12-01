@@ -17,23 +17,14 @@ public class Deck
         }
     }
 
-    public Card Pop()
-    {
-        Card card = Cards[Cards.Count - 1];
-        Cards.RemoveAt(Cards.Count - 1);
-
-        return card;
-    }
-
     public void Shuffle()
     {
         System.Random random = new System.Random();
         for (int i = 0; i < 52; i++)
         {
             int randomCardIndex = random.Next(Cards.Count);
-            int randomCardIndex2 = random.Next(Cards.Count);
 
-            SwapCards(randomCardIndex, randomCardIndex2);
+            SwapCards(randomCardIndex, i);
         }
     }
 
@@ -42,5 +33,13 @@ public class Deck
         Card tmpCard = Cards[firstCardIndex];
         Cards[firstCardIndex] = Cards[secondCardIndex];
         Cards[secondCardIndex] = tmpCard;
+    }
+
+    public Card Pop()
+    {
+        Card card = Cards[Cards.Count - 1];
+        Cards.RemoveAt(Cards.Count - 1);
+
+        return card;
     }
 }

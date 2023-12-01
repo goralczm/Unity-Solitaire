@@ -55,7 +55,10 @@ public class DeckDisplay : MonoBehaviour
     {
         foreach (FinalPile pile in _finalPiles)
         {
-            if (pile.Peek().Card.Value != CardValue.King)
+            if (!pile.HasCards)
+                return;
+
+            if (pile.PeekCard().GetValue() != CardValue.King)
                 return;
         }
 

@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Card Card { get; private set; }
     public bool IsShown { get; private set; }
 
     [Header("Instances")]
@@ -17,11 +16,12 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     [SerializeField] private GameObject _face;
     [SerializeField] private GameObject _reverse;
 
+    private Card _card;
     private CardPile _pile;
     private Transform _lastParentTransform;
     private Transform _beforeDragParent;
     private Transform _parentWhenDragging;
-    private Vector2 _lastDragPos;
+    private Vector2 _startDragPos;
 
     public delegate void OnMovedDelegate();
     public OnMovedDelegate OnMovedHandler;
@@ -30,21 +30,21 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void SetCard(Card card)
     {
-        Card = card;
+        _card = card;
         foreach (var valueText in _valueTexts)
         {
-            if (Card.Value == CardValue.Ace || (int)Card.Value >= 10)
-                valueText.SetText(Card.Value.ToString());
+            if (_card.Value == CardValue.Ace || (int)_card.Value >= 10)
+                valueText.SetText(_card.Value.ToString());
             else
-                valueText.SetText(((int)Card.Value + 1).ToString());
+                valueText.SetText(((int)_card.Value + 1).ToString());
         }
 
         foreach (var colorText in _suitTexts)
-            colorText.SetText(Card.Suit.ToString());
+            colorText.SetText(_card.Suit.ToString());
 
-        transform.name = $"{Card.Suit} {Card.Value}";
+        transform.name = $"{_card.Suit} {_card.Value}";
 
-        if (card.Suit == CardSuit.Diamonds || card.Suit == CardSuit.Hearts)
+        if (_card.Suit == CardSuit.Diamonds || _card.Suit == CardSuit.Hearts)
             _image.color = Color.red;
     }
 
@@ -53,9 +53,9 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (!IsShown)
             return;
 
-        _lastDragPos = transform.position;
+        _startDragPos = transform.position;
         _beforeDragParent = transform.parent;
-        transform.parent = _parentWhenDragging;
+        transform.SetParent(_parentWhenDragging);
         _lastParentTransform = transform.parent;
         _canvasGroup.blocksRaycasts = false;
         _canvasGroup.alpha = .6f;
@@ -75,9 +75,10 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         _canvasGroup.alpha = 1f;
         if (transform.parent == _lastParentTransform)
         {
-            transform.parent = _beforeDragParent;
-            transform.position = _lastDragPos;
+            transform.SetParent(_beforeDragParent);
+            transform.position = _startDragPos;
         }
+
         OnMovedHandler?.Invoke();
     }
 
@@ -115,4 +116,8 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
         return _pile.GetCardsBelow(this);
     }
+
+    public CardSuit GetSuit() => _card.Suit;
+
+    public CardValue GetValue() => _card.Value;
 }

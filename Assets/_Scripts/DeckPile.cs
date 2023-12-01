@@ -2,12 +2,12 @@ using UnityEngine.EventSystems;
 
 public class DeckPile : CardPile, IPointerClickHandler
 {
-    protected override bool IsValidValue(Card card)
+    protected override bool IsValidValue(CardValue value)
     {
         return false;
     }
 
-    protected override bool IsValidSuit(Card card)
+    protected override bool IsValidSuit(CardSuit suit)
     {
         return false;
     }
@@ -17,14 +17,14 @@ public class DeckPile : CardPile, IPointerClickHandler
         if (eventData.button != PointerEventData.InputButton.Right)
             return;
 
-        if (_cardsOnPile.Count == 0 || _cardsOnPile.Count == 1)
+        if (!HasCards || _cardsOnPile.Count == 1)
             return;
 
         CardDisplay lastCard = _cardsOnPile[_cardsOnPile.Count - 1];
         RemoveCard(lastCard);
         lastCard.ShowReverse();
-        lastCard.SetParent(transform, _cardOffset);
-        _cardsOnPile[0].SetParent(lastCard.transform, _cardOffset);
+        lastCard.SetParent(transform, _cardsOffset);
+        _cardsOnPile[0].SetParent(lastCard.transform, _cardsOffset);
         _cardsOnPile.Insert(0, lastCard);
     }
 }

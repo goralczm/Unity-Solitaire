@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 
 public class CardPile : MonoBehaviour, IDropHandler
 {
-    [SerializeField] protected Vector2 _cardOffset;
+    [Header("Settings")]
+    [SerializeField] protected Vector2 _cardsOffset;
 
     protected List<CardDisplay> _cardsOnPile;
 
@@ -27,28 +28,32 @@ public class CardPile : MonoBehaviour, IDropHandler
         if (_cardsOnPile.Contains(card))
             return;
 
-        if (!CanAddCard(card.Card))
+        if (!CanAddCard(card.GetSuit(), card.GetValue()))
             return;
 
-        if (_cardsOnPile.Count == 0)
-            card.SetParent(transform, _cardOffset);
+        if (!HasCards)
+            card.SetParent(transform, _cardsOffset);
         else
         {
-            if (!_cardsOnPile[_cardsOnPile.Count - 1].IsShown)
+            if (!PeekCard().IsShown)
                 return;
 
-            card.SetParent(_cardsOnPile[_cardsOnPile.Count - 1].transform, _cardOffset);
+            card.SetParent(PeekCard().transform, _cardsOffset);
         }
 
         AddCard(card);
     }
 
+    public CardDisplay PeekCard() => _cardsOnPile.Count == 0 ? null : _cardsOnPile[_cardsOnPile.Count - 1];
+
+    public bool HasCards => _cardsOnPile.Count > 0;
+
     public void ForceAddCardToPile(CardDisplay card)
     {
-        if (_cardsOnPile.Count == 0)
-            card.SetParent(transform, _cardOffset);
+        if (!HasCards)
+            card.SetParent(transform, _cardsOffset);
         else
-            card.SetParent(_cardsOnPile[_cardsOnPile.Count - 1].transform, _cardOffset);
+            card.SetParent(_cardsOnPile[_cardsOnPile.Count - 1].transform, _cardsOffset);
 
         AddCard(card);
     }
@@ -71,10 +76,10 @@ public class CardPile : MonoBehaviour, IDropHandler
     {
         _cardsOnPile.Remove(card);
 
-        if (_cardsOnPile.Count == 0)
+        if (!HasCards)
             return;
 
-        _cardsOnPile[_cardsOnPile.Count - 1].ShowFace();
+        PeekCard().ShowFace();
     }
 
     public List<CardDisplay> GetCardsBelow(CardDisplay card)
@@ -88,34 +93,26 @@ public class CardPile : MonoBehaviour, IDropHandler
         return cardsBelow;
     }
 
-    protected bool CanAddCard(Card card)
+    protected bool CanAddCard(CardSuit suit, CardValue value)
     {
-        return IsValidValue(card) && IsValidSuit(card);
+        return IsValidValue(value) && IsValidSuit(suit);
     }
 
-    protected virtual bool IsValidValue(Card card)
+    protected virtual bool IsValidValue(CardValue value)
     {
-        if (_cardsOnPile.Count == 0)
+        if (!HasCards)
             return true;
 
-        return card.Value + 1 == _cardsOnPile[_cardsOnPile.Count - 1].Card.Value;
+        return value + 1 == PeekCard().GetValue();
     }
 
-    protected virtual bool IsValidSuit(Card card)
+    protected virtual bool IsValidSuit(CardSuit suit)
     {
-        if (_cardsOnPile.Count == 0)
+        if (!HasCards)
             return true;
 
-        CardSuit lastCardSuit = _cardsOnPile[_cardsOnPile.Count - 1].Card.Suit;
-        return (int)card.Suit != ((int)lastCardSuit + 2) % 4 &&
-               card.Suit != lastCardSuit;
-    }
-
-    public CardDisplay Peek()
-    {
-        if (_cardsOnPile.Count == 0)
-            return null;
-
-        return _cardsOnPile[_cardsOnPile.Count - 1];
+        CardSuit lastCardSuit = PeekCard().GetSuit();
+        return (int)suit != ((int)lastCardSuit + 2) % 4 &&
+               suit != lastCardSuit;
     }
 }

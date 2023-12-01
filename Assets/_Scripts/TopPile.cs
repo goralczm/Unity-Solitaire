@@ -2,11 +2,11 @@ public class TopPile : CardPile
 {
     public override void AddCardToPile(CardDisplay card)
     {
-        if (_cardsOnPile.Count == 0)
+        if (!HasCards)
         {
-            if ((int)card.Card.Value != 12)
+            if (card.GetValue() != CardValue.King)
                 return;
-        }    
+        }
 
         base.AddCardToPile(card);
     }

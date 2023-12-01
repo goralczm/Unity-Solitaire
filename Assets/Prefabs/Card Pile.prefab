@@ -89,4 +89,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400511b5bef28d24988599fc2b4ca36e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardOffset: {x: 0, y: -45}
+  _cardsOffset: {x: 0, y: -75}

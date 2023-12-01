@@ -12,18 +12,16 @@ public class FinalPile : CardPile
         base.AddCardToPile(card);
     }
 
-    protected override bool IsValidSuit(Card card)
+    protected override bool IsValidSuit(CardSuit suit)
     {
-        return true;
-        return card.Suit == _requiredSuit;
+        return suit == _requiredSuit;
     }
 
-    protected override bool IsValidValue(Card card)
+    protected override bool IsValidValue(CardValue value)
     {
-        return true;
-        if (_cardsOnPile.Count == 0)
-            return card.Value == 0;
+        if (!HasCards)
+            return value == CardValue.Ace;
 
-        return card.Value == _cardsOnPile[_cardsOnPile.Count - 1].Card.Value + 1;
+        return value == _cardsOnPile[_cardsOnPile.Count - 1].GetValue() + 1;
     }
 }

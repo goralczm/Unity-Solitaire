@@ -9,6 +9,10 @@ public class DeckDisplay : MonoBehaviour
     [SerializeField] private Transform _cardDragParent;
     [SerializeField] private FinalPile[] _finalPiles;
 
+    [Header("Cards Visuals")]
+    [SerializeField] private Sprite[] _suitSprites;
+    [SerializeField] private Sprite[] _valueSprites;
+
     private Deck _deck;
 
     private void Start()
@@ -43,7 +47,7 @@ public class DeckDisplay : MonoBehaviour
     private CardDisplay CreateCard(Card card, CardPile pile)
     {
         CardDisplay newCardDisplay = Instantiate(_cardPrefab, pile.transform.position, Quaternion.identity);
-        newCardDisplay.SetCard(card);
+        newCardDisplay.SetCard(card, _suitSprites[(int)card.Suit], _valueSprites[(int)card.Value]);
         newCardDisplay.SetDragParent(_cardDragParent);
         newCardDisplay.OnMovedHandler += CheckWinCondition;
         pile.ForceAddCardToPile(newCardDisplay);

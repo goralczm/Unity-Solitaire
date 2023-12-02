@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class DeckPile : CardPile, IPointerClickHandler
@@ -23,7 +24,7 @@ public class DeckPile : CardPile, IPointerClickHandler
         CardDisplay lastCard = _cardsOnPile[_cardsOnPile.Count - 1];
         RemoveCard(lastCard);
         lastCard.ShowReverse();
-        lastCard.SetParent(transform, _cardsOffset);
+        lastCard.SetParent(transform, Vector2.zero);
         _cardsOnPile[0].SetParent(lastCard.transform, _cardsOffset);
         _cardsOnPile.Insert(0, lastCard);
     }

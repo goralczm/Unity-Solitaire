@@ -9,9 +9,8 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public bool IsShown { get; private set; }
 
     [Header("Instances")]
-    [SerializeField] private Image _image;
-    [SerializeField] private TextMeshProUGUI[] _valueTexts;
-    [SerializeField] private TextMeshProUGUI[] _suitTexts;
+    [SerializeField] private Image[] _suitImages;
+    [SerializeField] private Image[] _valueImages;
     [SerializeField] private CanvasGroup _canvasGroup;
     [SerializeField] private GameObject _face;
     [SerializeField] private GameObject _reverse;
@@ -28,24 +27,28 @@ public class CardDisplay : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void SetDragParent(Transform canvas) => _parentWhenDragging = canvas;
 
-    public void SetCard(Card card)
+    public void SetCard(Card card, Sprite suitSprite, Sprite valueSprite)
     {
         _card = card;
-        foreach (var valueText in _valueTexts)
+
+        Color cardColor = _card.Suit == CardSuit.Diamonds ||
+                          _card.Suit == CardSuit.Hearts ?
+                          Color.red :
+                          Color.black;
+
+        foreach (Image suitImage in _suitImages)
         {
-            if (_card.Value == CardValue.Ace || (int)_card.Value >= 10)
-                valueText.SetText(_card.Value.ToString());
-            else
-                valueText.SetText(((int)_card.Value + 1).ToString());
+            suitImage.sprite = suitSprite;
+            suitImage.color = cardColor;
         }
 
-        foreach (var colorText in _suitTexts)
-            colorText.SetText(_card.Suit.ToString());
+        foreach (Image valueImage in _valueImages)
+        {
+            valueImage.sprite = valueSprite;
+            valueImage.color = cardColor;
+        }
 
         transform.name = $"{_card.Suit} {_card.Value}";
-
-        if (_card.Suit == CardSuit.Diamonds || _card.Suit == CardSuit.Hearts)
-            _image.color = Color.red;
     }
 
     public void OnBeginDrag(PointerEventData eventData)

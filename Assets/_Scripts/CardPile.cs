@@ -32,7 +32,7 @@ public class CardPile : MonoBehaviour, IDropHandler
             return;
 
         if (!HasCards)
-            card.SetParent(transform, _cardsOffset);
+            card.SetParent(transform, Vector2.zero);
         else
         {
             if (!PeekCard().IsShown)
@@ -51,7 +51,7 @@ public class CardPile : MonoBehaviour, IDropHandler
     public void ForceAddCardToPile(CardDisplay card)
     {
         if (!HasCards)
-            card.SetParent(transform, _cardsOffset);
+            card.SetParent(transform, Vector2.zero);
         else
             card.SetParent(_cardsOnPile[_cardsOnPile.Count - 1].transform, _cardsOffset);
 

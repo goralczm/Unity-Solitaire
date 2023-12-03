@@ -18,6 +18,11 @@ public class DeckPile : CardPile, IPointerClickHandler
         if (eventData.button != PointerEventData.InputButton.Right)
             return;
 
+        NextCard();
+    }
+
+    public void NextCard()
+    {
         if (!HasCards || _cardsOnPile.Count == 1)
             return;
 

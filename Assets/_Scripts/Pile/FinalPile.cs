@@ -4,12 +4,13 @@ public class FinalPile : CardPile
 {
     [SerializeField] private CardSuit _requiredSuit;
 
-    public override void AddCardToPile(CardDisplay card)
+    public override bool CanAddCard(Card card)
     {
-        if (card.GetAllCardsBelow().Count > 0)
-            return;
+        bool hasCardsBelow = card.GetAllCardsBelow().Count > 0;
+        if (hasCardsBelow)
+            return false;
 
-        base.AddCardToPile(card);
+        return base.CanAddCard(card);
     }
 
     protected override bool IsValidSuit(CardSuit suit)

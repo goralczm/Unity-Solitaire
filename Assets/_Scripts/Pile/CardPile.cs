@@ -7,48 +7,55 @@ public class CardPile : MonoBehaviour, IDropHandler
     [Header("Settings")]
     [SerializeField] protected Vector2 _cardsOffset;
 
-    protected List<CardDisplay> _cardsOnPile;
+    protected List<Card> _cardsOnPile;
 
-    private void Awake() => _cardsOnPile = new List<CardDisplay>();
+    private void Awake() => _cardsOnPile = new List<Card>();
 
     public void OnDrop(PointerEventData eventData)
     {
         if (eventData.pointerDrag == null)
             return;
 
-        CardDisplay draggedCard = eventData.pointerDrag.GetComponent<CardDisplay>();
+        Card draggedCard = eventData.pointerDrag.GetComponent<Card>();
         if (draggedCard == null)
             return;
 
-        AddCardToPile(draggedCard);
+        if (!CanAddCard(draggedCard))
+            return;
+
+        MoveCardCommand moveCardCommand = new MoveCardCommand(draggedCard.GetPile(), this, draggedCard);
+        GameFlow.Instance.RegisterCommand(moveCardCommand);
     }
 
-    public virtual void AddCardToPile(CardDisplay card)
+    public virtual bool CanAddCard(Card card)
     {
         if (_cardsOnPile.Contains(card))
-            return;
+            return false;
 
-        if (!CanAddCard(card.GetSuit(), card.GetValue()))
-            return;
+        if (!IsValidSuitAndValue(card.GetSuit(), card.GetValue()))
+            return false;
 
+        if (HasCards && !PeekCard().IsShown)
+            return false;
+
+        return true;
+    }
+
+    public virtual void AddCardToPile(Card card)
+    {
         if (!HasCards)
             card.SetParent(transform, Vector2.zero);
         else
-        {
-            if (!PeekCard().IsShown)
-                return;
-
             card.SetParent(PeekCard().transform, _cardsOffset);
-        }
 
         AddCard(card);
     }
 
-    public CardDisplay PeekCard() => _cardsOnPile.Count == 0 ? null : _cardsOnPile[_cardsOnPile.Count - 1];
+    public Card PeekCard() => _cardsOnPile.Count == 0 ? null : _cardsOnPile[_cardsOnPile.Count - 1];
 
     public bool HasCards => _cardsOnPile.Count > 0;
 
-    public void ForceAddCardToPile(CardDisplay card)
+    public void ForceAddCardToPile(Card card)
     {
         if (!HasCards)
             card.SetParent(transform, Vector2.zero);
@@ -58,12 +65,12 @@ public class CardPile : MonoBehaviour, IDropHandler
         AddCard(card);
     }
 
-    private void AddCard(CardDisplay card)
+    private void AddCard(Card card)
     {
         _cardsOnPile.Add(card);
 
-        List<CardDisplay> cardsBelow = card.GetAllCardsBelow();
-        foreach (CardDisplay cardBelow in cardsBelow)
+        List<Card> cardsBelow = card.GetAllCardsBelow();
+        foreach (Card cardBelow in cardsBelow)
         {
             _cardsOnPile.Add(cardBelow);
             cardBelow.SetPile(this);
@@ -72,7 +79,7 @@ public class CardPile : MonoBehaviour, IDropHandler
         card.SetPile(this);
     }
 
-    public void RemoveCard(CardDisplay card)
+    public void RemoveCard(Card card)
     {
         _cardsOnPile.Remove(card);
 
@@ -82,9 +89,9 @@ public class CardPile : MonoBehaviour, IDropHandler
         PeekCard().ShowFace();
     }
 
-    public List<CardDisplay> GetCardsBelow(CardDisplay card)
+    public List<Card> GetCardsBelow(Card card)
     {
-        List<CardDisplay> cardsBelow = new List<CardDisplay>();
+        List<Card> cardsBelow = new List<Card>();
 
         int cardIndex = _cardsOnPile.IndexOf(card);
         for (int i = cardIndex + 1; i < _cardsOnPile.Count; i++)
@@ -93,7 +100,7 @@ public class CardPile : MonoBehaviour, IDropHandler
         return cardsBelow;
     }
 
-    protected bool CanAddCard(CardSuit suit, CardValue value)
+    protected bool IsValidSuitAndValue(CardSuit suit, CardValue value)
     {
         return IsValidValue(value) && IsValidSuit(suit);
     }

@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 public class Deck
 {
-    public List<Card> Cards { get; private set; }
+    public List<CardData> Cards { get; private set; }
 
     public Deck()
     {
-        Cards = new List<Card>();
+        Cards = new List<CardData>();
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 13; j++)
             {
-                Card newCard = new Card((CardSuit)i, (CardValue)j);
+                CardData newCard = new CardData((CardSuit)i, (CardValue)j);
                 Cards.Add(newCard);
             }
         }
@@ -30,14 +30,14 @@ public class Deck
 
     private void SwapCards(int firstCardIndex, int secondCardIndex)
     {
-        Card tmpCard = Cards[firstCardIndex];
+        CardData tmpCard = Cards[firstCardIndex];
         Cards[firstCardIndex] = Cards[secondCardIndex];
         Cards[secondCardIndex] = tmpCard;
     }
 
-    public Card Pop()
+    public CardData Pop()
     {
-        Card card = Cards[Cards.Count - 1];
+        CardData card = Cards[Cards.Count - 1];
         Cards.RemoveAt(Cards.Count - 1);
 
         return card;

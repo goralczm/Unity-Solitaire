@@ -81,8 +81,6 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
             transform.SetParent(_beforeDragParent);
             transform.position = _startDragPos;
         }
-
-        OnMovedHandler?.Invoke();
     }
 
     public void ShowFace()
@@ -111,6 +109,7 @@ public class Card : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     {
         _pile?.RemoveCard(this);
         _pile = pile;
+        OnMovedHandler?.Invoke();
     }
 
     public CardPile GetPile()
